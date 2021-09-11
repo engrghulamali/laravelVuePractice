@@ -1,5 +1,5 @@
 <?php
-
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,3 +20,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('{path}', 'HomeController@index')->where('path','([A-z\d-\/.]+)?');
+// Route::get('{path}',"HomeController@index")->where( 'path', '([A-z\d-\/_.]+)?' );
+Route::get('{path}','HomeController@index')->where( 'path', '([A-z\d\-\/_.]+)' );
+// Route::get('{path}',"HomeController@index")->where( 'path', "/^[a-z0-9]([0-9a-z_-\s])+$/i" );

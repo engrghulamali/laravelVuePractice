@@ -48282,3 +48282,13 @@ readers do not read off random characters that represent icons */
   font-weight: 400;
 }
 
+.router-link-exact-active {
+  background-color: #3f51b5;
+  color: #fff !important;
+}
+
+.navbar-laravel {
+  background-color: #f1f1f3;
+  color: #0a0a0a !important;
+}
+
