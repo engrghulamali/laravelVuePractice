@@ -18,7 +18,8 @@ import VueRouter from 'vue-router';
 Vue.use(VueRouter);
 const routes = [
     { path: '/profile', component:  require('./components/Profile.vue').default },
-    { path: '/dashboard', component:  require('./components/Dashboard.vue').default }
+    { path: '/dashboard', component:  require('./components/Dashboard.vue').default },
+    { path: '/users', component:  require('./components/User.vue').default }
   ]
 const router =new VueRouter({
     mode:'history',
