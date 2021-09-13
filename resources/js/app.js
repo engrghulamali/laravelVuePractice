@@ -70,8 +70,10 @@ const options = {
   });
 
   window.toastr = toast;
-  
-
+   
+  //////////////event and lister
+ 
+  window.Fire = new Vue();
   
 /**
  * The following block of code may be used to automatically register your

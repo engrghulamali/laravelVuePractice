@@ -2160,18 +2160,39 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
       users: {},
       ///create a new form new instance
       form: new Form({
-        name: '',
-        email: '',
-        password: '',
-        type: '',
-        bio: '',
-        photo: ''
+        name: "",
+        email: "",
+        password: "",
+        type: "",
+        bio: "",
+        photo: ""
       })
     };
   },
@@ -2188,17 +2209,48 @@ __webpack_require__.r(__webpack_exports__);
     },
     createUser: function createUser() {
       this.$Progress.start();
-      this.form.post('api/user');
-      $('#exampleModalCenter').modal('hide');
+      this.form.post("api/user"); //event
+      // Fire.$emit("AfterCreate");
+
+      $("#exampleModalCenter").modal("hide");
       toastr({
-        type: 'success',
-        title: 'User created successfully'
+        type: "success",
+        title: "User created successfully"
       });
       this.$Progress.finish();
+    },
+    deleteUser: function deleteUser(id) {
+      var _this2 = this;
+
+      swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+      }).then(function (result) {
+        if (result.value) {
+          _this2.form["delete"]('api/user/' + id).then(function () {
+            swal.fire('Success!', 'Your file has been deleted.', 'success'); // Fire.$emit("AfterCreate");
+
+            _this2.loadUsers();
+          })["catch"](function () {
+            swal.fire("Failed!", "There was something wrong!.", "warning");
+          });
+        }
+      });
     }
   },
   created: function created() {
-    this.loadUsers(); //  setInterval(this.loadUsers,3000);
+    var _this3 = this;
+
+    this.loadUsers(); ///listner
+
+    this.$on('AfterCreate', function () {
+      _this3.loadUsers();
+    }); //  setInterval(this.loadUsers,3000);
     // console.log (this.loadUsers);
   }
 });
@@ -41233,13 +41285,30 @@ var render = function() {
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(user.name))]),
                     _vm._v(" "),
-                    _c("td", [_vm._v(_vm._s(user.email) + " ")]),
+                    _c("td", [_vm._v(_vm._s(user.email))]),
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(_vm._f("upText")(user.type)))]),
                     _vm._v(" "),
                     _c("td", [_vm._v(_vm._s(user.bio))]),
                     _vm._v(" "),
-                    _vm._m(2, true)
+                    _c("td", [
+                      _vm._m(2, true),
+                      _vm._v("/\n\n                  "),
+                      _vm._m(3, true),
+                      _vm._v("/\n\n                  "),
+                      _c(
+                        "a",
+                        {
+                          attrs: { href: "#" },
+                          on: {
+                            click: function($event) {
+                              return _vm.deleteUser(user.id)
+                            }
+                          }
+                        },
+                        [_c("i", { staticClass: "fa fa-trash red" })]
+                      )
+                    ])
                   ])
                 }),
                 0
@@ -41271,7 +41340,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content" }, [
-              _vm._m(3),
+              _vm._m(4),
               _vm._v(" "),
               _c(
                 "form",
@@ -41518,7 +41587,7 @@ var render = function() {
                     )
                   ]),
                   _vm._v(" "),
-                  _vm._m(4)
+                  _vm._m(5)
                 ]
               )
             ])
@@ -41546,7 +41615,10 @@ var staticRenderFns = [
               "data-target": "#exampleModalCenter"
             }
           },
-          [_vm._v("Add New "), _c("i", { staticClass: "fas fa-user-plus" })]
+          [
+            _vm._v("\n              Add New "),
+            _c("i", { staticClass: "fas fa-user-plus" })
+          ]
         )
       ])
     ])
@@ -41575,18 +41647,16 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("a", { attrs: { href: "#" } }, [
-        _c("i", { staticClass: "fa fa-eye green" })
-      ]),
-      _vm._v("/\n\n                  "),
-      _c("a", { attrs: { href: "#" } }, [
-        _c("i", { staticClass: "fa fa-edit blue" })
-      ]),
-      _vm._v("/\n\n                  "),
-      _c("a", { attrs: { href: "#" } }, [
-        _c("i", { staticClass: "fa fa-trash red" })
-      ])
+    return _c("a", { attrs: { href: "#" } }, [
+      _c("i", { staticClass: "fa fa-eye green" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("a", { attrs: { href: "#" } }, [
+      _c("i", { staticClass: "fa fa-edit blue" })
     ])
   },
   function() {
@@ -41625,7 +41695,7 @@ var staticRenderFns = [
           staticClass: "btn btn-danger",
           attrs: { type: "button", "data-dismiss": "modal" }
         },
-        [_vm._v("Close")]
+        [_vm._v("\n              Close\n            ")]
       ),
       _vm._v(" "),
       _c(
@@ -57106,7 +57176,9 @@ var toast = sweetalert2__WEBPACK_IMPORTED_MODULE_5___default.a.mixin({
   showConfirmButton: false,
   timer: 3000
 });
-window.toastr = toast;
+window.toastr = toast; //////////////event and lister
+
+window.Fire = new vue__WEBPACK_IMPORTED_MODULE_0___default.a();
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
