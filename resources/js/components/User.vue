@@ -8,8 +8,7 @@
             <div class="card-tools">
               <button
                 class="btn btn-success"
-                data-toggle="modal"
-                data-target="#exampleModalCenter"
+                @click="addModel()"
               >
                 Add New <i class="fas fa-user-plus"></i>
               </button>
@@ -38,7 +37,7 @@
                   <td>
                     <a href="#"> <i class="fa fa-eye green"></i> </a>/
 
-                    <a href="#"> <i class="fa fa-edit blue"></i> </a>/
+                    <a href="#" @click="editModel(user)"> <i class="fa fa-edit blue"></i> </a>/
 
                     <a href="#" @click="deleteUser(user.id)">
                       <i class="fa fa-trash red"></i>
@@ -64,7 +63,8 @@
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">New User</h5>
+            <h5 v-show="!editMode" class="modal-title" id="exampleModalLongTitle">New User</h5>
+            <h5 v-show="editMode" class="modal-title" id="exampleModalLongTitle">Update User's Info</h5>
             <button
               type="button"
               class="close"
@@ -74,7 +74,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <form @submit.prevent="createUser">
+          <form @submit.prevent="editMode ? editMode : createUser">
             <div class="modal-body">
               <div class="form-group">
                 <input
@@ -148,7 +148,8 @@
               <button type="button" class="btn btn-danger" data-dismiss="modal">
                 Close
               </button>
-              <button type="submit" class="btn btn-primary">Create</button>
+              <button v-show="!editMode" type="submit" class="btn btn-primary">Create</button>
+              <button v-show="editMode" type="submit" class="btn btn-success">Update</button>
             </div>
           </form>
         </div>
@@ -161,6 +162,7 @@
 export default {
   data() {
     return {
+      editMode:false,
       users: {},
 
       ///create a new form new instance
@@ -175,6 +177,18 @@ export default {
     };
   },
   methods: {
+
+    editModel(user){
+      this.editMode = true;
+      this.form.fill(user);
+      $("#exampleModalCenter").modal("show");
+        
+    },
+    addModel(){
+      this.editMode = false;
+      this.form.reset();
+      $("#exampleModalCenter").modal("show");
+    },
     loadUsers() {
       axios
         .get("api/user")
