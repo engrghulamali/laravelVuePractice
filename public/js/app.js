@@ -2189,6 +2189,7 @@ __webpack_require__.r(__webpack_exports__);
       users: {},
       ///create a new form new instance
       form: new Form({
+        id: "",
         name: "",
         email: "",
         password: "",
@@ -2204,24 +2205,58 @@ __webpack_require__.r(__webpack_exports__);
       this.form.fill(user);
       $("#exampleModalCenter").modal("show");
     },
+    UpdateUser: function UpdateUser() {
+      var _this = this;
+
+      alert("here");
+      this.$Progress.start();
+      this.form.put('api/user/' + this.form.id).then(function () {
+        $("#exampleModalCenter").modal("hide");
+        swal.fire('Success!', 'Record have been updated.', 'success'); // Fire.$emit("AfterCreate");
+
+        _this.loadUsers();
+
+        _this.$Progress.finish();
+      })["catch"](function () {
+        _this.$Progress.finish();
+
+        swal.fire("Failed!", "There was something wrong!.", "warning");
+      });
+    },
     addModel: function addModel() {
       this.editMode = false;
       this.form.reset();
       $("#exampleModalCenter").modal("show");
     },
     loadUsers: function loadUsers() {
-      var _this = this;
+      var _this2 = this;
 
       axios.get("api/user").then(function (response) {
         // JSON responses are automatically parsed.
-        _this.users = response.data;
+        _this2.users = response.data;
       })["catch"](function (e) {
-        _this.errors.push(e);
+        _this2.errors.push(e);
       });
     },
     createUser: function createUser() {
+      var _this3 = this;
+
+      console.log("creation mode");
       this.$Progress.start();
-      this.form.post("api/user"); //event
+      this.form.post("api/user").then(function () {
+        $("#exampleModalCenter").modal("hide");
+        swal.fire('Success!', 'Record hve been created.', 'success'); // Fire.$emit("AfterCreate");
+
+        _this3.loadUsers();
+
+        _this3.$Progress.finish();
+      })["catch"](function () {
+        swal.fire("Failed!", "There was something wrong!.", "warning");
+
+        _this3.$Progress.finish();
+
+        $("#exampleModalCenter").modal("show");
+      }); //event
       // Fire.$emit("AfterCreate");
 
       $("#exampleModalCenter").modal("hide");
@@ -2232,7 +2267,7 @@ __webpack_require__.r(__webpack_exports__);
       this.$Progress.finish();
     },
     deleteUser: function deleteUser(id) {
-      var _this2 = this;
+      var _this4 = this;
 
       swal.fire({
         title: "Are you sure?",
@@ -2244,10 +2279,10 @@ __webpack_require__.r(__webpack_exports__);
         confirmButtonText: "Yes, delete it!"
       }).then(function (result) {
         if (result.value) {
-          _this2.form["delete"]('api/user/' + id).then(function () {
+          _this4.form["delete"]('api/user/' + id).then(function () {
             swal.fire('Success!', 'Your file has been deleted.', 'success'); // Fire.$emit("AfterCreate");
 
-            _this2.loadUsers();
+            _this4.loadUsers();
           })["catch"](function () {
             swal.fire("Failed!", "There was something wrong!.", "warning");
           });
@@ -2256,12 +2291,12 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    var _this3 = this;
+    var _this5 = this;
 
     this.loadUsers(); ///listner
 
     this.$on('AfterCreate', function () {
-      _this3.loadUsers();
+      _this5.loadUsers();
     }); //  setInterval(this.loadUsers,3000);
     // console.log (this.loadUsers);
   }
@@ -41427,7 +41462,7 @@ var render = function() {
                   on: {
                     submit: function($event) {
                       $event.preventDefault()
-                      _vm.editMode ? _vm.editMode : _vm.createUser
+                      _vm.editMode ? _vm.UpdateUser() : _vm.createUser()
                     }
                   }
                 },

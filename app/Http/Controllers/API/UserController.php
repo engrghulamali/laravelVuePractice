@@ -7,6 +7,16 @@ use Illuminate\Http\Request;
 use App\User;
 class UserController extends Controller
 {
+      /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('api');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -61,7 +71,15 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user = User::findOrFail($id);
+        $this->validate($request,[
+            // 'bio' => 'required|min:5',
+            'name' => ['required'],
+            'password' => 'sometimes',
+            'email' => 'required|email|string|unique:users,email,'.$user->id,
+        ]);
+        $user->update($request->all());
+        return ['message'=>"User updated successfully!"];
     }
 
     /**

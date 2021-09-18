@@ -74,7 +74,7 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-          <form @submit.prevent="editMode ? editMode : createUser">
+          <form @submit.prevent="editMode ?  UpdateUser() : createUser()">
             <div class="modal-body">
               <div class="form-group">
                 <input
@@ -167,6 +167,7 @@ export default {
 
       ///create a new form new instance
       form: new Form({
+        id: "",
         name: "",
         email: "",
         password: "",
@@ -182,6 +183,30 @@ export default {
       this.editMode = true;
       this.form.fill(user);
       $("#exampleModalCenter").modal("show");
+        
+    },
+    UpdateUser(){
+      alert("here");
+      this.$Progress.start();
+      this.form.put('api/user/'+this.form.id)
+      .then(()=>{
+      $("#exampleModalCenter").modal("hide");
+        swal.fire(
+        'Success!',
+        'Record have been updated.',
+        'success'
+        )
+        // Fire.$emit("AfterCreate");
+        this.loadUsers();
+        this.$Progress.finish();
+
+      })
+      .catch(()=>{
+        this.$Progress.finish();
+        swal.fire("Failed!", "There was something wrong!.", "warning"); 
+        
+
+      });
         
     },
     addModel(){
@@ -202,8 +227,29 @@ export default {
     },
 
     createUser() {
+      console.log("creation mode");
       this.$Progress.start();
-      this.form.post("api/user");
+      this.form.post("api/user") 
+      .then(()=>{
+        $("#exampleModalCenter").modal("hide");
+        swal.fire(
+        'Success!',
+        'Record hve been created.',
+        'success'
+        )
+        // Fire.$emit("AfterCreate");
+        this.loadUsers();
+        this.$Progress.finish();
+
+      })
+      .catch(()=>{
+        swal.fire("Failed!", "There was something wrong!.", "warning"); 
+        this.$Progress.finish();
+        $("#exampleModalCenter").modal("show");
+
+        
+
+      });
       //event
       // Fire.$emit("AfterCreate");
       $("#exampleModalCenter").modal("hide");
